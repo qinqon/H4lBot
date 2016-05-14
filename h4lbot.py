@@ -6,7 +6,9 @@ import telepot
 import random
 import datetime
 import json
+
 from tinydb import TinyDB, Query
+from daemonize import Daemonize
 
 class commands:
     addmovie, addmusic, addtorrent, unknown= range(4)
@@ -51,9 +53,10 @@ def handle(msg):
         current_command = commands.unknown
 # Getting the token from command-line is better than embedding it in code,
 # because tokens are supposed to be kept secret.
-TOKEN = sys.argv[1]
+TOKEN 	= sys.argv[1]
+DB_PATH = sys.argv[2]
 
-db = TinyDB('db.json')
+db = TinyDB(DB_PATH + '/db.json')
 
 current_command = commands.unknown
 bot = telepot.Bot(TOKEN)
@@ -62,5 +65,9 @@ print ('Listening ...')
 
 
 # Keep the program running.
-while 1:
-    time.sleep(10)
+def main():
+    while True:
+       time.sleep(10)
+
+daemon = Daemonize(app="h4lbot", pid="/tmp/h4lbot.pid", action=main)
+daemon.start()
