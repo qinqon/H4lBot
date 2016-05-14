@@ -20,7 +20,7 @@ def show_wishlist(chat_id, media_type):
         message += row['name'] + "\n"
     bot.sendMessage(chat_id, message)
 
-def add_to_wishlist(media_type, values):
+def add_to_wishlist(chat_id, media_type, values):
     for value in values.split("\n"):
         db.insert({'type': media_type, 'name': value})
     bot.sendMessage(chat_id, media_type + " succesfully added.")
@@ -30,8 +30,6 @@ def handle(msg):
     global db 
     chat_id = msg['chat']['id']
     text    = msg['text']
-    hide_keyboard = {'hide_keyboard': True}
-    bot.sendMessage(chat_id, 'I am hiding it', reply_markup=hide_keyboard)
     if text == '/addmovie':
         bot.sendMessage(chat_id, "Send me a movie you want to add to the wishlist")
         current_command = commands.addmovie
@@ -47,9 +45,9 @@ def handle(msg):
         show_wishlist(chat_id, 'movie')
     elif current_command != commands.unknown: 
         if current_command == commands.addmovie:
-            add_to_wishlist('movie', text)
+            add_to_wishlist(chat_id, 'movie', text)
         if current_command == commands.addmusic:
-            add_to_wishlist('music', text)
+            add_to_wishlist(chat_id, 'music', text)
         current_command = commands.unknown
 # Getting the token from command-line is better than embedding it in code,
 # because tokens are supposed to be kept secret.
