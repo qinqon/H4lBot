@@ -65,9 +65,8 @@ print ('Listening ...')
 
 
 # Keep the program running.
-def main():
-    while True:
-       time.sleep(10)
+while 1:
+	time.sleep(10)
 
-daemon = Daemonize(app="h4lbot", pid="/tmp/h4lbot.pid", action=main)
-daemon.start()
+#daemon = Daemonize(app="h4lbot", pid="/tmp/h4lbot.pid", action=main)
+#daemon.start()
