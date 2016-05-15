@@ -14,9 +14,10 @@
 DIR=/home/qinqon/Documentos/H4lBot/
 DAEMON_NAME=h4lbot
 DAEMON=$DIR/$DAEMON_NAME.py
-
+TOKEN=`cat $DIR/token`
+USER_ID=`cat $DIR/user_id`
 # Add any command line options for your daemon here
-DAEMON_OPTS="`cat $DIR/token` /home/qinqon/Documentos/"
+DAEMON_OPTS="$TOKEN /home/qinqon/Documentos/ $USER_ID"
 
 # This next line determines what user the script runs as.
 # Root generally not recommended but necessary if you are using the Raspberry Pi GPIO from Python.
