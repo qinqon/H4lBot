@@ -97,7 +97,7 @@ def handle(msg):
         if current_command == commands.camshot:
             file_id = msg['voice']['file_id']
             bot.download_file(file_id, '/tmp/hi.ogg')
-            os.system("cvlc --play-and-exit -A alsa --alsa-audio-device hw:1,7  /tmp/hi.ogg")
+            os.system("cvlc --play-and-exit -A alsa --alsa-audio-device hw:0,0  /tmp/hi.ogg")
             bot.sendMessage(chat_id, "Waitting for Basilio... be patient my friend")
             bot.sendVideo(chat_id, get_cam_shot())
         current_command = commands.unknown
