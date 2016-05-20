@@ -10,33 +10,36 @@ import cv2
 import urllib2
 import numpy as np
 import sys
-import os
 import argparse
+import pyglet
 
 from tinydb import TinyDB, Query
 
+def diffImg(t0, t1, t2):
+    d1 = cv2.absdiff(t2, t1)
+    d2 = cv2.absdiff(t1, t0)
+    return cv2.bitwise_and(d1, d2)
+
+
 def get_cam_shot():
-    host = "192.168.1.128:8081"
+    
     camshot = "/tmp/camshot.avi"
-    hoststr = 'http://' + host + '/video'
     
     # Define the codec and create VideoWriter object
     fourcc = cv2.cv.CV_FOURCC(*'XVID')
     out = cv2.VideoWriter(camshot,fourcc, 20.0, (640,480))
     
-    stream=urllib2.urlopen(hoststr)
-    bytes=''
+    # Open the webcam
+    cap = cv2.VideoCapture(0)
+    
+    # Store only the first 100 frames
     frame_count = 100
-    while frame_count > 0:
-        bytes+=stream.read(1024)
-        a = bytes.find('\xff\xd8')
-        b = bytes.find('\xff\xd9')
-        if a != -1 and b != -1:
+    while frame_count > 0 and cap.isOpened():
+        ret, frame = cap.read()
+        if ret==True:
             frame_count -= 1
-            jpg = bytes[a:b+2]
-            bytes= bytes[b+2:]
-            capture = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8),cv2.CV_LOAD_IMAGE_COLOR)
-            out.write(capture)
+            out.write(frame)
+    cap.release()
     out.release()
     return open(camshot, 'rb')
 
@@ -94,7 +97,8 @@ def handle(msg):
         if current_command == commands.camshot:
             file_id = msg['voice']['file_id']
             bot.download_file(file_id, '/tmp/hi.ogg')
-            os.system("cvlc --play-and-exit -A alsa --alsa-audio-device hw:1,7  /tmp/hi.ogg")
+            hi = pyglet.media.load('/tmp/hi.ogg')
+            hi.play()
             bot.sendMessage(chat_id, "Waitting for Basilio... be patient my friend")
             bot.sendVideo(chat_id, get_cam_shot())
         current_command = commands.unknown
